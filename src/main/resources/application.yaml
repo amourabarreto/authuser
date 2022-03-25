@@ -1,0 +1,25 @@
+server:
+  port: 8087
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ead-authuser
+    username: postgres
+    password: adm123
+  jpa:
+    hibernate:
+      ddl-auto: update #alterações em objetos serão refletidos no banco de dados
+      dialect:  org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+         lob.no-contextual-creation: true #bloqueia leitura de meta informações que podem gerar log de erro na inicialização do hibernate
+    properties:
+      hibernate:
+        show_sql: true
+
+
+
+
+
+
+
+
