@@ -5,6 +5,7 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,26 +16,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Log4j2
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/users")
 public class UserController {
 
+    public static final String USER_NOT_FOUND = "User not found!";
     @Autowired
     UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page> getAllUsers(
+    public ResponseEntity<Page<UserModel>> getAllUsers(
                                     SpecificationTemplate.UserSpec spec,
-                                    @PageableDefault(page = 0, size=10,sort ="userId", direction = Sort.Direction.ASC) Pageable pageable){
-        Page<UserModel> userModelPage = userService.findAll(spec,pageable);
+                                    @PageableDefault(page = 0, size=10,sort ="userId", direction = Sort.Direction.ASC) Pageable pageable,
+                                    @RequestParam(required = false) UUID courseId){
+        Page<UserModel> userModelPage = null;
+        if(courseId!=null){
+            userModelPage = userService.findAll(SpecificationTemplate.userCourseId(courseId).and(spec),pageable);
+        }else{
+            userModelPage = userService.findAll(spec,pageable);
+        }
         if(!userModelPage.isEmpty()){
             userModelPage.toList().stream().forEach(user -> user.add(linkTo(methodOn(UserController.class).getOneUser(user.getUserId())).withSelfRel()));
         }
@@ -45,7 +53,7 @@ public class UserController {
     public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId){
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(userModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
         }
@@ -53,11 +61,15 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value="userId") UUID userId){
+
+        log.debug("DELETE deleteUser userID received {} ",userId);
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(userModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
         }else{
             userService.delete(userModelOptional.get());
+            log.debug("DELETE deleteUser userID deleted {} ",userId);
+            log.info("User deleted successfuly userId {} ",userId);
             return ResponseEntity.status(HttpStatus.OK).body("User deleted success!");
         }
     }
@@ -68,15 +80,18 @@ public class UserController {
                                              @Validated(UserDto.UserView.UserPut.class)
                                              @JsonView(UserDto.UserView.UserPut.class)
                                              UserDto userDto){
+        log.debug("PUT updateUser userDto received {} ",userDto.toString());
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(userModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
         }else{
             var userModel = userModelOptional.get();
             userModel.setFullName(userDto.getFullName());
             userModel.setPhoneNumber(userDto.getPhoneNumber());
             userModel.setCpf(userDto.getCpf());
             userService.save(userModel);
+            log.debug("PUT updateUser userId saved {} ",userModel.getUserId());
+            log.debug("PUT updated seccessfuly userId {} ",userModel.getUserId());
             return ResponseEntity.status(HttpStatus.OK).body(userModel);
         }
     }
@@ -89,8 +104,10 @@ public class UserController {
                                                      UserDto userDto){
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(userModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
-        }if(!userModelOptional.get().getPassword().equals(userDto.getOldPassword())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
+        }
+        if(!userModelOptional.get().getPassword().equals(userDto.getOldPassword())){
+            log.warn("A senha antiga está diferente! {}  ",userDto.getUserId());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("A senha antiga está diferente!");
         } else{
             var userModel = userModelOptional.get();
@@ -108,7 +125,7 @@ public class UserController {
                                                          UserDto userDto){
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(userModelOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
         }else{
             var userModel = userModelOptional.get();
             userModel.setImageUrl(userDto.getImageUrl());

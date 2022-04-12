@@ -8,18 +8,20 @@ spring:
     password: adm123
   jpa:
     hibernate:
-      ddl-auto: update #alterações em objetos serão refletidos no banco de dados
+      ddl-auto: update #alteracoes em objetos serao refletidos no banco de dados
       dialect:  org.hibernate.dialect.PostgreSQLDialect
       jdbc:
-         lob.no-contextual-creation: true #bloqueia leitura de meta informações que podem gerar log de erro na inicialização do hibernate
+        lob.no-contextual-creation: true #bloqueia leitura de meta informacoes que podem gerar log de erro na inicializacao do hibernate
     properties:
       hibernate:
         show_sql: true
+  output:
+    ansi:
+      enabled: always
 
-
-
-
-
-
-
-
+logging:
+  level:
+    com.ead: TRACE
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate : INFO
