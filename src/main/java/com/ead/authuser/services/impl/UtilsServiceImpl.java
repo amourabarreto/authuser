@@ -1,6 +1,7 @@
 package com.ead.authuser.services.impl;
 
 import com.ead.authuser.services.UtilsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +9,9 @@ import java.util.UUID;
 
 @Service
 public class UtilsServiceImpl implements UtilsService {
-    private String RESQUEST_URI="http://localhost:8082";
+
+    @Value("${ead.api.url.course}")
+    private String RESQUEST_URI;
 
     @Override
     public String createUrl(UUID userId, Pageable pageable){
