@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface UserCourseService {
     boolean existsByUserAndCourseId(UserModel userModel, UUID courseId);
 
-    Object save(UserCourseModel converToUserCourseModel);
+    UserCourseModel save(UserCourseModel converToUserCourseModel);
 }

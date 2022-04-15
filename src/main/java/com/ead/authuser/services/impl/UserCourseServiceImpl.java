@@ -17,11 +17,11 @@ public class UserCourseServiceImpl implements UserCourseService {
 
     @Override
     public boolean existsByUserAndCourseId(UserModel userModel, UUID courseId) {
-        return userCourseRepository.existsByUserAndCourseId(userModel,courseId);
+        return userCourseRepository.existsByUserAndCourseId(userModel, courseId);
     }
 
     @Override
-    public Object save(UserCourseModel userCourseModel) {
+    public UserCourseModel save(UserCourseModel userCourseModel) {
         return userCourseRepository.save(userCourseModel);
     }
 }

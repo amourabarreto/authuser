@@ -21,7 +21,7 @@ import java.util.UUID;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL) //se o campo for null ele não envia no json
 @Entity
-@Table(name="TB_USERS")
+@Table(name = "TB_USERS")
 public class UserModel extends RepresentationModel<UserModel> implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -32,14 +32,14 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false,unique = true,length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(nullable = false,length = 255)
+    @Column(nullable = false, length = 255)
     @JsonIgnore
     private String password;
 
-    @Column(nullable = false,length = 150)
+    @Column(nullable = false, length = 150)
     private String fullName;
 
     @Column(nullable = false)
@@ -59,22 +59,22 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column
     private String imageUrl;
 
-    @Column(nullable = false,updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @Column(nullable = false, updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @CreationTimestamp
     private LocalDateTime creationDate;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<UserCourseModel> usersCourses;
 
-    public UserCourseModel convertToUserCourseModel(UUID courseId){
-        return new UserCourseModel(null,courseId,this);
+    public UserCourseModel convertToUserCourseModel(UUID courseId) {
+        return new UserCourseModel(null, courseId, this);
     }
 
 }

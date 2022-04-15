@@ -28,12 +28,13 @@ public class CourseClient {
 
     public Page<CourseDto> getAllCoursesByUser(UUID userId, Pageable pageable) {
         List<CourseDto> searchResult = null;
-        String url = utilsService.createUrl(userId,pageable);
+        String url = utilsService.createUrl(userId, pageable);
         log.debug(" Request URL: {}", url);
         log.info(" Request URL: {}", url);
         ResponseEntity<ResponsePageDto<CourseDto>> result = null;
         try {
-            ParameterizedTypeReference<ResponsePageDto<CourseDto>> responseType = new ParameterizedTypeReference<ResponsePageDto<CourseDto>>() {};
+            ParameterizedTypeReference<ResponsePageDto<CourseDto>> responseType = new ParameterizedTypeReference<ResponsePageDto<CourseDto>>() {
+            };
             result = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
             searchResult = result.getBody().getContent();
             log.debug(" Response Number of Elements: {}", searchResult.size());

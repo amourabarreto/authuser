@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/instructors")
 public class InstructorController {
 
@@ -24,12 +24,12 @@ public class InstructorController {
     UserService userService;
 
     @PostMapping("/subscription")
-    public ResponseEntity<Object> saveSubscriptionInstructor(@RequestBody @Valid InstructorDto instructorDto){
+    public ResponseEntity<Object> saveSubscriptionInstructor(@RequestBody @Valid InstructorDto instructorDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(instructorDto.getUserId());
-        if(userModelOptional.isEmpty()) {
+        if (userModelOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
-        }else{
+        } else {
             var userModel = userModelOptional.get();
             userModel.setUserType(UserType.INSTRUCTOR);
             userService.save(userModel);

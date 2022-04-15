@@ -21,6 +21,6 @@ public class ResponsePageDto<T> extends PageImpl<T> {
                            @JsonProperty("sort") JsonNode sort,
                            @JsonProperty("first") boolean first,
                            @JsonProperty("empty") boolean empty) {
-        super(content, PageRequest.of(number,size),totalElements);
+        super(content, PageRequest.of(number, size), totalElements);
     }
 }

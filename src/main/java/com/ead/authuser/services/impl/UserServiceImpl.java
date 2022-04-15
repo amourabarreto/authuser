@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(UserModel userModel) {
         List<UserCourseModel> userCourseModels = userCourseRepository.findAllUserCourseIntoCourse(userModel.getUserId());
-        if(!userCourseModels.isEmpty()){
+        if (!userCourseModels.isEmpty()) {
             userCourseRepository.deleteAll(userCourseModels);
         }
         userRepository.delete(userModel);
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
-        return userRepository.findAll(spec,pageable);
+        return userRepository.findAll(spec, pageable);
     }
 
 

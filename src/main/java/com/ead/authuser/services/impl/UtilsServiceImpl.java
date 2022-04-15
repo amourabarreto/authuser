@@ -14,8 +14,8 @@ public class UtilsServiceImpl implements UtilsService {
     private String RESQUEST_URI;
 
     @Override
-    public String createUrl(UUID userId, Pageable pageable){
-        return RESQUEST_URI + "/courses?userId="+ userId  + "&page=" + pageable.getPageNumber() + "&size=" +
+    public String createUrl(UUID userId, Pageable pageable) {
+        return RESQUEST_URI + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size=" +
                 pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
     }
 }
