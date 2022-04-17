@@ -5,6 +5,7 @@ import com.ead.authuser.dtos.ResponsePageDto;
 import com.ead.authuser.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,10 @@ import java.util.UUID;
 @Log4j2
 @Component
 public class CourseClient {
+
+    @Value("${ead.api.url.course}")
+    private String RESQUEST_URI;
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -46,4 +51,9 @@ public class CourseClient {
     }
 
 
+    public void deleteUserInCourse(UUID userId) {
+        String  url = RESQUEST_URI+"/courses/users/"+userId;
+        restTemplate.exchange(url,HttpMethod.DELETE,null,String.class);
+
+    }
 }
