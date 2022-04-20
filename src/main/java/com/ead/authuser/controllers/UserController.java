@@ -61,7 +61,7 @@ public class UserController {
         if (userModelOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND);
         } else {
-            userService.delete(userModelOptional.get());
+            userService.deleteUser(userModelOptional.get());
             log.debug("DELETE deleteUser userID deleted {} ", userId);
             log.info("User deleted successfuly userId {} ", userId);
             return ResponseEntity.status(HttpStatus.OK).body("User deleted success!");
@@ -83,7 +83,7 @@ public class UserController {
             userModel.setFullName(userDto.getFullName());
             userModel.setPhoneNumber(userDto.getPhoneNumber());
             userModel.setCpf(userDto.getCpf());
-            userService.save(userModel);
+            userService.updateUser(userModel);
             log.debug("PUT updateUser userId saved {} ", userModel.getUserId());
             log.debug("PUT updated seccessfuly userId {} ", userModel.getUserId());
             return ResponseEntity.status(HttpStatus.OK).body(userModel);
@@ -106,7 +106,7 @@ public class UserController {
         } else {
             var userModel = userModelOptional.get();
             userModel.setPassword(userDto.getPassword());
-            userService.save(userModel);
+            userService.updatePassword(userModel);
             return ResponseEntity.status(HttpStatus.OK).body("Senha atualizada com sucesso!");
         }
     }
@@ -123,7 +123,7 @@ public class UserController {
         } else {
             var userModel = userModelOptional.get();
             userModel.setImageUrl(userDto.getImageUrl());
-            userService.save(userModel);
+            userService.updateUser(userModel);
             return ResponseEntity.status(HttpStatus.OK).body(userModel);
         }
     }

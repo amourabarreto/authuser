@@ -32,7 +32,7 @@ public class InstructorController {
         } else {
             var userModel = userModelOptional.get();
             userModel.setUserType(UserType.INSTRUCTOR);
-            userService.save(userModel);
+            userService.updateUser(userModel);
             return ResponseEntity.status(HttpStatus.OK).body(userModel);
         }
 

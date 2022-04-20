@@ -1,5 +1,7 @@
 package com.ead.authuser.models;
 
+import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.dtos.UserEventDto;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -66,4 +69,11 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @UpdateTimestamp
     private LocalDateTime lastUpdate;
 
+    public UserEventDto convertToUserEventDto(){
+        var userEventDto = new UserEventDto();
+        BeanUtils.copyProperties(this,userEventDto);
+        userEventDto.setUserStatus(this.getUserStatus().toString());
+        userEventDto.setUserType(this.getUserType().toString());
+      return userEventDto;
+    }
 }
