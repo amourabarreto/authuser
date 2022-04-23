@@ -23,7 +23,11 @@ spring:
     ansi:
       enabled: always
   rabbitmq:
-    addresses: amqps://dljpvpuf:krd992tzYuOUDUm43gevu0m3i5oueHky@toad.rmq.cloudamqp.com/dljpvpuf
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 logging:
   level:
     com.ead: TRACE
