@@ -31,7 +31,7 @@ spring:
 logging:
   level:
     com.ead: TRACE
-    root: DEBUG
+    #root: DEBUG
     org.springframework.web: DEBUG
     org.hibernate: INFO
 
@@ -51,11 +51,21 @@ eureka:
     prefer-ip-address: true
 
 resilience4j:
+  circuitbreaker:
+    instances:
+      circuitBrakerInstance:
+        sliding-window-size: 30
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: time_based
+        minimum-number-of-calls: 4
+        wait-duration-in-open-state: 30s
+        failure-rate-threshold: 80
   retry:
     instances:
       retryInstances:
         maxAttempts: 3
         waitDuration: 5s
+
 
 
 
