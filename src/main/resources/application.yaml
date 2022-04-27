@@ -50,6 +50,14 @@ eureka:
   instance:
     prefer-ip-address: true
 
+resilience4j:
+  retry:
+    instances:
+      retryInstances:
+        maxAttempts: 3
+        waitDuration: 5s
+
+
 
 
 
