@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.stream.Collectors;
+
 @Log4j2
 @Component
 public class JwtProvider {
@@ -19,16 +21,20 @@ public class JwtProvider {
     private int jwtExpirationMs;
 
     public String generateJwt(Authentication authentication){
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetailsImpl userPrincial = (UserDetailsImpl) authentication.getPrincipal();
+        final String roles = userPrincial.getAuthorities().stream().map(
+                role -> {return role.getAuthority();}
+        ).collect(Collectors.joining(","));
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(userPrincial.getUserId().toString())
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date( (new Date()).getTime() + jwtExpirationMs ))
                 .signWith(SignatureAlgorithm.HS512,jwtSecret)
                 .compact();
     }
 
-    public String getUsernameJwt(String token){
+    public String getSubjectJwt(String token){
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
