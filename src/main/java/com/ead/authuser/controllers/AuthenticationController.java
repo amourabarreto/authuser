@@ -88,4 +88,33 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtDto(jwt));
     }
 
+    @PostMapping("/signup/admin/usr")
+    public ResponseEntity<Object> registerUserAdmin(@RequestBody
+                                               @Validated(UserDto.UserView.RegistrationPost.class)
+                                               @JsonView(UserDto.UserView.RegistrationPost.class)
+                                               UserDto userDto) {
+        log.debug("POST registerUser userDto received {} ", userDto.toString());
+        if (userService.existsByUserName(userDto.getUsername())) {
+            log.warn("Username {} já cadastrado!  ", userDto.getUsername());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: username já cadastrado!");
+        }
+
+        if (userService.existsByEmail(userDto.getEmail())) {
+            log.warn("Email {} já cadastrado!  ", userDto.getEmail());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: email já cadastrado!");
+        }
+        RoleModel rolerModel = roleService.findByRoleName(RoleType.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Error: Roler não encotnrada!"));
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(userDto, userModel);
+        userModel.setUserStatus(UserStatus.ACTIVE);
+        userModel.setUserType(UserType.ADMIN);
+        userModel.getRoles().add(rolerModel);
+        userService.saveUserAndPublish(userModel);
+        log.debug("POST registerUser userId saved {} ", userModel.getUserId());
+        log.info("User saved successfuly userId {} ", userModel.getUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+    }
+
 }
